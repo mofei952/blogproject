@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <style>
+        .article-div{
+            border-bottom: 1px solid #f2f2f2;
+            padding-bottom: 5px;
+        }
+        .article-info{
+            font-size: 14px;
+        }
+        .comment-count-span{
+            font-size: 12px;
+        }
+        .am-pagination{
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#pre_btn').click(function () {
+                page = parseInt($('ul.am-pagination li.am-active a').text())
+                location.href = '/blog/'+(page-1)
+            })
+            $('#next_btn').click(function () {
+                page = parseInt($('ul.am-pagination li.am-active a').text())
+                location.href = '/blog/'+(page+1)
+            })
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% for article in article_list %}
+        <div class="article-div am-padding">
+            <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
+            <div class="am-fr article-info">
+                {{ article.create_at | date:"DATETIME_FORMAT"}}
+                <a href="{% url 'blog:user_information' article.user.id %}">{{ article.user.name }}</a>
+            </div>
+            <div>
+                {{ article.content | safe | striptags | truncatechars:100 }}
+            </div>
+            <div class="am-cf">
+                <span class="am-fr comment-count-span">
+                    评论(<a href="{% url 'blog:article_detail' article.id %}">{{ article.comment_count }}</a>)
+                </span>
+            </div>
+        </div>
+    {% endfor %}
+    <div >
+        {% load extra_tags %}
+        {% get_display_page_range article_list.paginator.num_pages article_list.number as display_page_range  %}
+        <ul class="am-pagination am-pagination-left">
+            <li class="{% if not article_list.has_previous %}am-disabled{% endif %}"><a id="pre_btn">&laquo;</a></li>
+            {% if display_page_range|first != 1 %}
+                <li><span>...</span></li>
+            {% endif %}
+            {% for p in display_page_range %}
+                <li class="{% if article_list.number == p %}am-active{% endif %}"><a href="{% url 'blog:index' p %}">{{ p }}</a></li>
+            {% endfor %}
+            {% if display_page_range|last != article_list.paginator.num_pages %}
+                <li><span>...</span></li>
+            {% endif %}
+            <li class="{% if not article_list.has_next %}am-disabled{% endif %}"><a id="next_btn">&raquo;</a></li>
+        </ul>
+    </div>
+{% endblock %}

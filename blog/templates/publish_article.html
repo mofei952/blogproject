@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        #editor{
+{#            width: 1000px;#}
+            min-height: 500px;
+        }
+        .ck-editor{
+{#            width: 1000px !important;#}
+{#            margin: 0 auto !important;#}
+            margin: 1.6rem !important;
+        }
+        .ck-editor__editable {
+            min-height: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "ckeditor/ckeditor.js" %}"></script>
+    <script>
+        $(function () {
+            ClassicEditor
+                .create( document.querySelector( '#editor' ))
+                .then(function (editor) {
+                    window.editor = editor;
+{#                    editor.setData('1111');#}
+                })
+
+        })
+        function before_submit() {
+            $('input[name=content]').val(window.editor.getData())
+            return true
+        }
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <form method="post" action="{% url 'blog:publish_article' %}"  onsubmit="return before_submit()">
+        {% csrf_token %}
+        <div class="am-input-group am-margin">
+            <span class="am-input-group-label">标题</span>
+            <input type="text" class="am-form-field" name="title" required>
+        </div>
+        {{ form.errors.title.0 }}
+        <div id="editor"></div>
+        <input type="hidden" name="content" />
+        {{ form.errors.content.0 }}
+        <div class="am-margin am-cf">
+            <input type="submit" value="发 布" class="am-btn am-btn-primary am-fr">
+        </div>
+    </form>
+
+{% endblock %}

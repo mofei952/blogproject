@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="{% static "am/css/amazeui.min.css" %}">
+    {% block css %}{% endblock %}
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    <script src="{% static "am/js/amazeui.min.js" %}"></script>
+    <script>
+        $(function () {
+            $(function () {
+                $('a[href="{{ request.path }}"]').closest('li').addClass('am-active')
+            })
+        })
+    </script>
+    {% block js %}{% endblock %}
+</head>
+<body>
+    <header class="am-topbar">
+        <h1 class="am-topbar-brand">
+            <a href="#">博客</a>
+        </h1>
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+                data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
+        <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+            <ul class="am-nav am-nav-pills am-topbar-nav">
+                <li><a href="{% url 'blog:index' %}">首页</a></li>
+                <li><a href="{% url 'blog:user_article_manage' %}">我的博文</a></li>
+                <li><a href="{% url 'blog:publish_article' %}">发布文章</a></li>
+
+                <li class="am-dropdown" data-am-dropdown>
+                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                        下拉 <span class="am-icon-caret-down"></span>
+                    </a>
+                    <ul class="am-dropdown-content">
+                        <li class="am-dropdown-header">标题</li>
+                        <li><a href="#">1. 去月球</a></li>
+                        <li class="am-active"><a href="#">2. 去火星</a></li>
+                        <li><a href="#">3. 还是回地球</a></li>
+                        <li class="am-disabled"><a href="#">4. 下地狱</a></li>
+                        <li class="am-divider"></li>
+                        <li><a href="#">5. 桥头一回首</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <form class="am-topbar-form am-topbar-left am-form-inline" role="search">
+                <div class="am-form-group">
+                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索">
+                </div>
+            </form>
+
+{#            <div class="am-topbar-right">#}
+{#                <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">#}
+{#                    <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm am-dropdown-toggle"#}
+{#                            data-am-dropdown-toggle>其他 <span class="am-icon-caret-down"></span></button>#}
+{#                    <ul class="am-dropdown-content">#}
+{#                        <li><a href="#">注册</a></li>#}
+{#                        <li><a href="#">随便看看</a></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+
+            <div class="am-topbar-right">
+                {% if request.session.user %}
+                    {{ request.session.user.name }}
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:user_information' %}';">个人中心</button>
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:logout' %}';">退出</button>
+                {% else %}
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm">登录</button>
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm">注册</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <div id="content" style="width:1000px;margin:0 auto;">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

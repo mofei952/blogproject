@@ -1,0 +1,25 @@
+{% extends 'user_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <style>
+        .user-div{
+            border-bottom: 1px solid #f2f2f2;
+            padding: 20px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block user_content %}
+    {% for user in follow_users %}
+        <div class="user-div am-cf">
+            <div>
+                <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
+                {{ user.name }}
+            </div>
+            <div class="am-fr">
+                <input type="button" id="follow_btn" value="已关注" class="am-btn am-btn-xs am-round am-btn-primary" data="{{ user.id }}">
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static "am/css/amazeui.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    <script>
+        $(function () {
+            $('#register_btn').click(function () {
+                location.href = '{% url 'blog:register' %}'
+            })
+        })
+    </script>
+</head>
+<body class="container">
+    <div class="am-g">
+        <div class="header">
+            <h1>博客</h1>
+        </div>
+        <hr>
+        <form method="post" action="{% url 'blog:login' %}">
+            {% csrf_token %}
+            <div class="login-div">
+                <div class="am-input-group">
+                    <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+                    <input type="text" class="am-form-field" name="name" placeholder="用户名" value="{{ form.cleaned_data.name }}">
+                </div>
+                {{ form.errors.name.0 }}<br>
+                <div class="am-input-group">
+                    <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+                    <input type="text" class="am-form-field" name="password" placeholder="密码" value="{{ form.cleaned_data.password }}">
+                </div>
+                {{ form.errors.password.0 }}<br>
+                <div class="am-cf">
+                    <input type="submit" value="登 录" class="am-btn am-btn-primary am-fl">
+                    <input type="button" value="注 册" class="am-btn am-btn-primary am-fr" id="register_btn">
+                </div>
+                {{ form.non_field_errors.0 }}
+            </div>
+        </form>
+    </div>
+</body>
+</html>

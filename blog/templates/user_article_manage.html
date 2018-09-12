@@ -1,0 +1,22 @@
+{% extends 'user_base.html' %}
+
+{% block extra_css %}
+    <style>
+        .article-div{
+            border-bottom: 1px solid #f2f2f2;
+            padding: 10px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block user_content %}
+    {% for article in article_list %}
+        <div class="article-div">
+            <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
+            <div class="am-fr article-info">
+                {{ article.create_at | date:"DATETIME_FORMAT"}}
+{#                <a href="{% url 'blog:user_information' %}">{{ article.user.name }}</a>#}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

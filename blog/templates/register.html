@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static "am/css/amazeui.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+</head>
+<body class="container">
+    <div class="am-g">
+        <div class="header">
+            <h1>博客</h1>
+        </div>
+        <hr>
+        <form method="post" action="{% url 'blog:register' %}">
+            {% csrf_token %}
+            <div class="register-div">
+                <div class="am-input-group">
+                    <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+                    <input type="text" class="am-form-field" name="name" placeholder="用户名" value="{{ form.cleaned_data.name }}">
+                </div>
+                {{ form.errors.name.0 }}<br>
+                <div class="am-input-group">
+                    <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+                    <input type="text" class="am-form-field" name="password" placeholder="密码" value="{{ form.cleaned_data.password }}">
+                </div>
+                {{ form.errors.password.0 }}<br>
+                <div class="am-input-group">
+                    <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+                    <input type="text" class="am-form-field" name="confirm_password" placeholder="确认" value="{{ form.cleaned_data.password }}">
+                </div>
+                {{ form.errors.password.0 }}<br>
+                <div class="am-cf">
+                    <input type="submit" value="注 册" class="am-btn am-btn-primary am-btn-block">
+                </div>
+                {{ form.non_field_errors.0 }}
+            </div>
+        </form>
+    </div>
+</body>
+</html>
