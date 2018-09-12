@@ -1,5 +1,45 @@
 {% extends 'user_base.html' %}
 
+{% block extra_css %}
+    <style>
+        .notice-type-list{
+            width: 100px;
+        }
+        .notice-type-list li{
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function () {
+            $('.notice-type-list a').click(function () {
+                notice_type_id = $(this).attr('data')
+                li = $(this).closest('li')
+                $('.notice-list-div').load('/blog/notice_list/'+notice_type_id, function () {
+                    $('.notice-type-list li').removeClass('am-active')
+                    li.addClass('am-active')
+                })
+
+            })
+            $('.notice-type-list a:first').click()
+        })
+    </script>
+{% endblock %}
+
 {% block user_content %}
-    通知
+    <ul class="am-nav notice-type-list am-fl">
+        {% for notice_type in notice_type_list %}
+            <li class="{% if forloop.first %}am-active{% endif %}">
+                <a data="{{ notice_type.id }}">{{ notice_type.get_name_display }}</a>
+            </li>
+        {% endfor %}
+{#        <li class="am-active"><a href="#">评论通知</a></li>#}
+{#        <li><a href="#">回复通知</a></li>#}
+{#        <li><a href="#">@我的</a></li>#}
+{#        <li><a href="#">关注通知</a></li>#}
+    </ul>
+    <div class="notice-list-div am-fl">
+    </div>
 {% endblock %}

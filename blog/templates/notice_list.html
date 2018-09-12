@@ -1,0 +1,25 @@
+<style>
+    .notice-div{
+        width: 860px;
+        border-bottom: 1px solid #f2f2f2;
+    }
+</style>
+
+{% for notice in notice_list %}
+    <div class="notice-div am-padding-xs">
+    {% if notice.type.name == NoticeType.COMMENT_NOTICE %}
+        <a href="{% url 'blog:user_information' notice.sender.id %}">{{ notice.sender.name }}</a>在你的文章《
+        <a href="{% url 'blog:article_detail' notice.context.article_id %}">{{ notice.context.article_title }}</a>》中发表了评论:
+        <a href="/blog/article_detail/{{ notice.context.article_id }}#{{ notice.context.comment_id }}">{{ notice.context.comment_content }}</a>
+    {% elif notice.type.name == NoticeType.REPLY_NOTICE %}
+        <a href="{% url 'blog:user_information' notice.sender.id %}">{{ notice.sender.name }}</a>回复了你在文章《
+        <a href="{% url 'blog:article_detail' notice.context.article_id %}">{{ notice.context.article_title }}</a>》中发表的
+        <a href="/blog/article_detail/{{ notice.context.article_id }}#{{ notice.context.comment_id }}">{{ notice.context.comment_content }}</a>的评论:
+        <a href="/blog/article_detail/{{ notice.context.article_id }}#{{ notice.context.comment_id }}">{{ notice.context.reply_content }}</a>
+    {% else %}
+        asa
+    {% endif %}
+    </div>
+{% empty %}
+    <div class="am-padding-xs">暂无通知</div>
+{% endfor %}

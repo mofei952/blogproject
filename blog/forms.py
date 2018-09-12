@@ -8,7 +8,7 @@
 
 from django import forms
 
-from blog.models import User, Article, Comment
+from blog.models import User, Article, Comment, Reply
 
 
 class LoginForm(forms.ModelForm):
@@ -79,6 +79,17 @@ class ArticleForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
+        fields = ('content',)
+        error_messages = {
+            'content': {
+                'required': '内容不能为空'
+            }
+        }
+
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Reply
         fields = ('content',)
         error_messages = {
             'content': {

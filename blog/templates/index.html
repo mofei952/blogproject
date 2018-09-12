@@ -48,6 +48,9 @@
                 <span class="am-fr comment-count-span">
                     评论(<a href="{% url 'blog:article_detail' article.id %}">{{ article.comment_count }}</a>)
                 </span>
+                <span class="am-fr comment-count-span" style="margin-right:10px">
+                    阅读(<a href="{% url 'blog:article_detail' article.id %}">{{ article.articleread_set.count }}</a>)
+                </span>
             </div>
         </div>
     {% endfor %}

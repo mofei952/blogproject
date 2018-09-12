@@ -29,7 +29,9 @@ urlpatterns = [
     path('modify_user_info', views.ModifyUserInfoView.as_view(), name='modify_user_info'),
     path('profile_picture_list', views.ProfilePictureListView.as_view(), name='profile_picture_list'),
     path('modify_profile_picture/<int:id>', views.ModifyProfilePictureView.as_view(), name='modify_profile_picture'),
+    path('notice_list/<str:notice_type_id>', views.NoticeListView.as_view(), name='notice_list'),
 
     url(r'^ajax_follow/(?P<user_id>\d+)', views.ajax_follow),
-    url(r'^ajax_cancel_follow/(?P<user_id>\d+)', views.ajax_cancel_follow)
+    url(r'^ajax_cancel_follow/(?P<user_id>\d+)', views.ajax_cancel_follow),
+    path('ajax_reply/<int:comment_id>', views.ajax_reply)
 ]
