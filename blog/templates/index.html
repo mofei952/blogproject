@@ -56,18 +56,19 @@
     {% endfor %}
     <div >
         {% load extra_tags %}
-        {% get_display_page_range article_list.paginator.num_pages article_list.number as display_page_range  %}
+{#        {% get_display_page_range article_list.paginator.num_pages article_list.number as display_page_range  %}#}
         <ul class="am-pagination am-pagination-left">
             <li class="{% if not article_list.has_previous %}am-disabled{% endif %}"><a id="pre_btn">&laquo;</a></li>
-            {% if display_page_range|first != 1 %}
-                <li><span>...</span></li>
-            {% endif %}
-            {% for p in display_page_range %}
+{#            {% if display_page_range|first != 1 %}#}
+{#                <li><span>...</span></li>#}
+{#            {% endif %}#}
+{#            {% for p in display_page_range %}#}
+            {% for p in article_list.paginator.page_range %}
                 <li class="{% if article_list.number == p %}am-active{% endif %}"><a href="{% url 'blog:index' p %}">{{ p }}</a></li>
             {% endfor %}
-            {% if display_page_range|last != article_list.paginator.num_pages %}
-                <li><span>...</span></li>
-            {% endif %}
+{#            {% if display_page_range|last != article_list.paginator.num_pages %}#}
+{#                <li><span>...</span></li>#}
+{#            {% endif %}#}
             <li class="{% if not article_list.has_next %}am-disabled{% endif %}"><a id="next_btn">&raquo;</a></li>
         </ul>
     </div>
