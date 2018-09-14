@@ -54,7 +54,7 @@
 
         </div>
         <div style="margin:30px 0 20px" >
-            <ul class="am-nav am-nav-tabs">
+            <ul class="am-nav am-nav-tabs am-nav-justify">
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_information' %}">我的主页</a></li>
                 {% else %}
@@ -62,13 +62,13 @@
                 {% endif %}
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_article_manage' %}">我的博文</a></li>
-                    <li><a href="{% url 'blog:user_notice' %}">通知</a></li>
+                    <li><a href="{% url 'blog:user_notice' %}">我的通知</a></li>
                     <li><a href="{% url 'blog:user_follow' %}">我关注的</a></li>
                     <li><a href="{% url 'blog:user_followed' %}">关注我的</a></li>
                 {% endif %}
             </ul>
         </div>
-        <div>
+        <div class="am-cf">
             {% block user_content %}{% endblock %}
         </div>
     </div>

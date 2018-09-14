@@ -30,5 +30,5 @@ urlpatterns = [
 if settings.DEBUG is False:
     urlpatterns += url(r'^media/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}, name='media'),
     urlpatterns += url(r'^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT }, name='static'),
-
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

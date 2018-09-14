@@ -11,37 +11,50 @@
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
+        .article-info{
+            font-size: 12px;
+            padding-top: 5px;
+        }
         .comment-list-div{
             border-bottom: 1px solid #c5c5c5;
         }
         .comment-div{
             border-top: 1px solid #c5c5c5;
             background: #f2f2f2;
+{#            padding: 10px;#}
         }
         .comment-user-info{
             text-align: center;
 {#            border-right:1px solid #c5c5c5;#}
-            padding: 20px;
+            padding: 10px;
+        }
+        .comment-user-info img{
+            width: 80px;
+            margin: 0 auto;
         }
         .comment-right{
             background: white;
-            width: 821px;
-            min-height: 165px;
+{#            width: 821px;#}
+{#            min-height: 165px;#}
+            padding: 10px;
         }
         .comment-body{
-            padding: 20px;
-            width: 800px;
-            min-height: 130px;
+{#            padding: 20px;#}
+{#            width: 800px;#}
+{#            min-height: 130px;#}
+            min-height: 85px;
         }
         .comment-extra{
             font-size: 13px;
+            padding: 0;
         }
         .show_reply_btn{
             cursor: pointer;
         }
         .reply-list-div{
             background: #f7f8fa;
-            width: 570px;
+{#            width: 570px;#}
+            float: right;
             border: 1px solid #f0f1f2;
             margin: 10px 0;
             display: none;
@@ -51,13 +64,13 @@
             border-bottom: 1px solid #e5e5e5;
         }
         .reply-div img{
-            width: 50px;
+            width: 40px;
 
         }
         .reply-textarea{
-            margin:10px;
+{#            margin:10px;#}
             margin-bottom: 0;
-            width: 550px;
+{#            width: 550px;#}
             resize: none;
 {#            height: #}
         }
@@ -129,20 +142,20 @@
         <div class="comment-list-div am-cf">
             {% for comment in comment_list %}
                 <div class="comment-div am-cf" data="{{ comment.id }}" id="{{ comment.id }}">
-                    <div class="comment-user-info am-fl">
+                    <div class="comment-user-info am-fl am-u-sm-3 am-u-lg-2">
                         <img src="{% firstof comment.user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive" alt=""/>
-                        <a href="#">{{ comment.user.name }}</a>
+                        <a href="#" class="am-text-sm">{{ comment.user.name }}</a>
                     </div>
-                    <div class="comment-right am-fl">
+                    <div class="comment-right am-fl am-u-sm-9 am-u-lg-10">
                         <div class="comment-body">
                             {{ comment.content }}
                         </div>
-                        <div class="comment-extra am-fr">
+                        <div class="comment-extra am-fr am-u-sm-12">
                             <div class="am-cf">
                                 <a class="show_reply_btn am-fr">回复</a>
                                 <span class="am-fr">{{ comment.create_at }}</span>
                             </div>
-                            <div class="reply-list-div">
+                            <div class="reply-list-div am-u-sm-9">
                                 {% for reply in comment.reply_set.all %}
                                     <div class="reply-div">
                                         <img src="{% firstof reply.user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="" alt=""/>
@@ -150,8 +163,10 @@
                                         {{ reply.content }}
                                     </div>
                                 {% endfor %}
-                                <textarea class="reply-textarea"></textarea>
-                                <div class="am-padding-sm am-cf">
+                                <div class='am-cf' style="padding:10px">
+                                    <textarea class="reply-textarea am-u-sm-12"></textarea>
+                                </div>
+                                <div class="am-padding-sm am-cf" style="padding-top:0px">
                                     <input type="button" value="回复" class="am-btn am-btn-primary am-btn-xs am-fr reply_btn">
                                 </div>
                             </div>
