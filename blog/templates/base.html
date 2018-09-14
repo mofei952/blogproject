@@ -21,7 +21,7 @@
 <body>
     <header class="am-topbar">
         <h1 class="am-topbar-brand">
-            <a href="#">博客</a>
+            <a href="{% url 'blog:index' %}">博客</a>
         </h1>
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
                 data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
@@ -77,7 +77,7 @@
             </div>
         </div>
     </header>
-    <div id="content" style="width:1000px;margin:0 auto;">
+    <div id="content" class="am-u-sm-12 am-u-md-11 am-u-lg-9 am-u-sm-centered" style="/*width:1000px;margin:0 auto;*/">
         {% block content %}{% endblock %}
     </div>
 </body>

@@ -7,17 +7,20 @@
             border-bottom: 1px solid #f2f2f2;
             padding: 20px 0;
         }
+        .user-div img{
+            width: 50px;
+        }
     </style>
 {% endblock %}
 
 {% block user_content %}
     {% for user in followed_users %}
         <div class="user-div am-cf">
-            <div>
-                <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
-                {{ user.name }}
+            <div class="am-fl">
+                <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="" alt=""/>
+                <span>{{ user.name }}</span>
             </div>
-            <div class="am-fr">
+            <div class="am-fr" style="padding-top:11px;">
                 <input type="button" id="follow_btn" value="{% if user in follow_users %}已关注{% else %}关注{% endif %}" class="am-btn am-btn-xs am-round am-btn-primary" data="{{ user.id }}">
             </div>
         </div>

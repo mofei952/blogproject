@@ -3,7 +3,7 @@
 {% block extra_css %}
     <style>
         .notice-type-list{
-            width: 100px;
+{#            width: 100px;#}
         }
         .notice-type-list li{
             cursor: pointer;
@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block user_content %}
-    <ul class="am-nav notice-type-list am-fl">
+    <ul class="am-nav notice-type-list am-fl am-u-sm-3 am-u-md-3 am-u-lg-2">
         {% for notice_type in notice_type_list %}
             <li class="{% if forloop.first %}am-active{% endif %}">
                 <a data="{{ notice_type.id }}">{{ notice_type.get_name_display }}</a>
@@ -40,6 +40,6 @@
 {#        <li><a href="#">@我的</a></li>#}
 {#        <li><a href="#">关注通知</a></li>#}
     </ul>
-    <div class="notice-list-div am-fl">
+    <div class="notice-list-div am-fl am-u-sm-9 am-u-md-9 am-u-lg-10" style="padding-right:0">
     </div>
 {% endblock %}
