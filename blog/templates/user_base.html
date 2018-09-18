@@ -58,7 +58,7 @@
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_information' %}">我的主页</a></li>
                 {% else %}
-                    <li><a href="{% url 'blog:user_information' user.id|default:'' %}">他的主页</a></li>
+{#                    <li><a href="{% url 'blog:user_information' user.id|default:'' %}">他的主页</a></li>#}
                 {% endif %}
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_article_manage' %}">我的博文</a></li>

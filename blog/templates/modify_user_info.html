@@ -12,6 +12,17 @@
         #replace_profile_picture_btn{
             margin: 20px;
         }
+        .am-modal-dialog{
+            width: 310px;
+            height: 400px;
+{#            max-width: 423px;#}
+        }
+        @media only screen and (min-width:641px){
+            .am-modal-dialog{
+                width: 420px;
+                height: 340px;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -37,7 +48,7 @@
     <div class="am-padding">
         <div class="user-info-div am-cf">
             <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
-            <input type="button" id="replace_profile_picture_btn" value="修改头像" class="am-btn am-btn-primary am-btn-xs am-fl" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 420, height: 350}">
+            <input type="button" id="replace_profile_picture_btn" value="修改头像" class="am-btn am-btn-primary am-btn-xs am-fl" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0}">
         </div><br>
         <form method="post" action="{% url 'blog:modify_user_info' %}">
             {% csrf_token %}
