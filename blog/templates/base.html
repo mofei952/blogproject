@@ -17,6 +17,7 @@
             border-radius: 50%;
             line-height: 50px;
             margin-top: 8px;
+            cursor: pointer;
         }
         .name{
             line-height: 50px;
@@ -24,6 +25,10 @@
             /* padding-top: 2px; */
             float: left;
             height: 50px;
+            cursor: pointer;
+        }
+        .name:hover{
+            color: #0e90d2;
         }
     </style>
     {% block css %}{% endblock %}
@@ -105,8 +110,8 @@
 
             <div class="am-topbar-right">
                 {% if request.session.user %}
-                    <img src="{% firstof request.session.user.profile_picture_image_url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl pp" alt=""/>
-                    <span class="name">{{ request.session.user.name }}</span>
+                    <img src="{% firstof request.session.user.profile_picture_image_url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl pp" alt="" onclick="javascript:location.href='{% url 'blog:user_information' %}';"/>
+                    <span class="name" onclick="javascript:location.href='{% url 'blog:user_information' %}';">{{ request.session.user.name }}</span>
                     <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:user_information' %}';">个人中心</button>
                     <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:logout' %}';">退出</button>
                 {% else %}

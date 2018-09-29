@@ -4,10 +4,11 @@
     <style>
         .article-div{
             padding: 10px 0;
+            border-bottom: 1px solid #f2f2f2;
         }
         .article-info{
             font-size: 12px;
-            padding-top: 5px;
+            padding-top: 3px;
         }
     </style>
 {% endblock %}
@@ -21,7 +22,7 @@
 {#                <a href="{% url 'blog:user_information' %}">{{ article.user.name }}</a>#}
             </div>
             <div>
-                {{ article.content | safe | striptags | truncatechars:100 }}
+                {{ article.content | safe | striptags | cut:' ' | truncatechars:100 }}
             </div>
         </div>
     {% endfor %}

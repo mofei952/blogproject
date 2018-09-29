@@ -23,18 +23,19 @@
                 {{ form.errors.name.0 }}<br>
                 <div class="am-input-group">
                     <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
-                    <input type="text" class="am-form-field" name="password" placeholder="密码" value="{{ form.cleaned_data.password }}">
+                    <input type="password" class="am-form-field" name="password" placeholder="密码" value="{{ form.cleaned_data.password }}">
                 </div>
                 {{ form.errors.password.0 }}<br>
                 <div class="am-input-group">
                     <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
-                    <input type="text" class="am-form-field" name="confirm_password" placeholder="确认" value="{{ form.cleaned_data.password }}">
+                    <input type="password" class="am-form-field" name="confirm_password" placeholder="确认密码" value="{{ form.cleaned_data.confirm_password }}">
                 </div>
-                {{ form.errors.password.0 }}<br>
+                {{ form.errors.confirm_password.0 }}
+                {{ form.non_field_errors.0 }}<br>
                 <div class="am-cf">
                     <input type="submit" value="注 册" class="am-btn am-btn-primary am-btn-block">
                 </div>
-                {{ form.non_field_errors.0 }}
+
             </div>
         </form>
     </div>

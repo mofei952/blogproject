@@ -42,6 +42,7 @@ class Article(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_count = models.IntegerField(default=0)
 
+
 class ArticleRead(TimeStampModel):
     article = models.ForeignKey(Article, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

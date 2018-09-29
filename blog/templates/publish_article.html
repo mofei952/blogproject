@@ -3,17 +3,19 @@
 
 {% block css %}
     <style>
+        .title-div{
+            margin: 1.6rem 0;
+        }
         #editor{
-{#            width: 1000px;#}
             min-height: 500px;
         }
         .ck-editor{
 {#            width: 1000px !important;#}
 {#            margin: 0 auto !important;#}
-            margin: 1.6rem !important;
+            margin: 1.6rem 0 !important;
         }
         .ck-editor__editable {
-            min-height: 500px;
+            min-height: 300px;
         }
     </style>
 {% endblock %}
@@ -26,7 +28,7 @@
                 .create( document.querySelector( '#editor' ))
                 .then(function (editor) {
                     window.editor = editor;
-{#                    editor.setData('1111');#}
+                    editor.setData($('input[name=content]').val());
                 })
 
         })
@@ -41,13 +43,13 @@
 {% block content %}
     <form method="post" action="{% url 'blog:publish_article' %}"  onsubmit="return before_submit()">
         {% csrf_token %}
-        <div class="am-input-group am-margin">
+        <div class="am-input-group title-div">
             <span class="am-input-group-label">标题</span>
-            <input type="text" class="am-form-field" name="title" required>
+            <input type="text" class="am-form-field" name="title" value="{{ form.cleaned_data.title }}">
         </div>
         {{ form.errors.title.0 }}
         <div id="editor"></div>
-        <input type="hidden" name="content" />
+        <input type="hidden" name="content" value="{{ form.cleaned_data.content }}"/>
         {{ form.errors.content.0 }}
         <div class="am-margin am-cf">
             <input type="submit" value="发 布" class="am-btn am-btn-primary am-fr">

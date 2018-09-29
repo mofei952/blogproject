@@ -18,9 +18,13 @@
         .comment-list-div{
             border-bottom: 1px solid #c5c5c5;
         }
+        .empty-comment-div{
+            height: 50px;
+            text-align: center;
+        }
         .comment-div{
-            border-top: 1px solid #c5c5c5;
-            background: #f2f2f2;
+            border-top: 1px solid #f2f2f2;
+            background: #f9f9f9;
 {#            padding: 10px;#}
         }
         .comment-user-info{
@@ -50,6 +54,7 @@
         }
         .show_reply_btn{
             cursor: pointer;
+            margin-left: 10px;
         }
         .reply-list-div{
             background: #f7f8fa;
@@ -65,7 +70,6 @@
         }
         .reply-div img{
             width: 40px;
-
         }
         .reply-textarea{
 {#            margin:10px;#}
@@ -125,7 +129,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="am-cf am-padding">
+    <div class="am-cf">
         <div class="article-div">
             <div class="article-header">
                 <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
@@ -175,6 +179,10 @@
 
                     <div class="am-cf"></div>
 
+                </div>
+            {% empty %}
+                <div class="empty-comment-div">
+                    还没有人评论，快发表你的想法吧
                 </div>
             {% endfor %}
         </div>

@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册成功</title>
+    <script src="{% static "js/jquery-3.3.1.js" %}"></script>
+    <script>
+        $(function () {
+            var second = 5
+            setInterval(function () {
+                second--
+                $('#sp').text(second)
+                if(second == 0){
+                    location.href = '/blog/login'
+                }
+            }, 1000)
+        })
+    </script>
+</head>
+<body>
+    <p>注册成功！还有<span id="sp">5</span>秒跳转到登录界面...</p>
+</body>
+</html>
