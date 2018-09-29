@@ -62,9 +62,8 @@ class LogoutView(View):
 
 
 class IndexView(View):
-    @login_required
     def get(self, request, page=1):
-        name = request.session['user']['name']
+        # name = request.session['user']['name']
         from django.db.models import Count
         article_list = Article.objects.annotate(num=Count('articleread')).order_by('-comment_count', '-num')
         # article_list = Article.objects.all().order_by('-create_at', 'comment_set__count')
@@ -76,9 +75,11 @@ class IndexView(View):
 
 
 class PublishArticleView(View):
+    @login_required
     def get(self, request):
         return render(request, 'publish_article.html')
 
+    @login_required
     def post(self, request):
         article_form = ArticleForm(request.POST)
         if article_form.is_valid():
@@ -91,7 +92,8 @@ class PublishArticleView(View):
 class ArticleDetailView(View):
     def get(self, request, id):
         # 添加文章阅读记录
-        ArticleRead.objects.create(article_id=id, user_id=request.session['user']['id'])
+        user_id = request.session['user']['id'] if 'user' in request.session else ''
+        ArticleRead.objects.create(article_id=id, user_id=user_id)
         article = Article.objects.get(id=id)
         comment_list = article.comment_set.all()
         return render(request, 'article_detail.html', {'article': article, 'comment_list': comment_list})
@@ -104,12 +106,16 @@ class UserInformationView(View):
             id = request.session['user']['id']
         user = User.objects.get(id=id)
         article_list = Article.objects.filter(user_id=id).order_by('-create_at')
-        is_followed = True if user.followed_user.filter(user_id=request.session['user']['id']) else False
+        if 'user' in request.session and user.followed_user.filter(user_id=request.session['user']['id']):
+            is_followed = True
+        else:
+            is_followed = False
         return render(request, 'user_information.html',
                       {'user': user, 'is_followed': is_followed, 'article_list': article_list})
 
 
 class UserArticleManageView(View):
+    @login_required
     def get(self, request):
         id = request.session['user']['id']
         user = User.objects.get(id=id)
@@ -148,6 +154,7 @@ class UserFollowedView(View):
 
 
 class PublishCommentView(View):
+    @login_required
     def post(self, request, article_id):
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -213,11 +220,13 @@ class NoticeListView(View):
         return render(request, 'notice_list.html', {'NoticeType': NoticeType, 'notice_list': notice_list})
 
 
+@login_required
 def ajax_follow(request, user_id):
     Follow.objects.create(user_id=request.session['user']['id'], follow_user_id=user_id)
     return HttpResponse('true')
 
 
+@login_required
 def ajax_cancel_follow(request, user_id):
     print('cancel', user_id)
     Follow.objects.filter(user_id=request.session['user']['id'], follow_user_id=user_id).delete()
@@ -225,6 +234,7 @@ def ajax_cancel_follow(request, user_id):
 
 
 @csrf_exempt
+@login_required
 def ajax_reply(request, comment_id):
     reply_form = ReplyForm(request.POST)
     if reply_form.is_valid():
