@@ -42,6 +42,7 @@ class Article(TimeStampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_count = models.IntegerField(default=0)
 
+
 class ArticleRead(TimeStampModel):
     article = models.ForeignKey(Article, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -60,8 +61,8 @@ class Reply(TimeStampModel):
 
 
 class Follow(TimeStampModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follow_user')
-    follow_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followed_user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follow')
+    follow_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followed')
 
 
 class NoticeType(TimeStampModel):

@@ -3,9 +3,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>博客系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="{% static "am/css/amazeui.min.css" %}">
+    <style>
+        body{
+            color: #999;
+            font-size: 1.4rem;
+        }
+        .pp{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            line-height: 50px;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+        .name{
+            line-height: 50px;
+            margin: 0 8px;
+            float: left;
+            height: 50px;
+            cursor: pointer;
+        }
+        .name:hover{
+            color: #0e90d2;
+        }
+    </style>
     {% block css %}{% endblock %}
     <script src="{% static "js/jquery-3.3.1.js" %}"></script>
     <script src="{% static "am/js/amazeui.min.js" %}"></script>
@@ -15,6 +39,53 @@
                 $('a[href="{{ request.path }}"]').closest('li').addClass('am-active')
             })
         })
+        $.ajaxSetup({
+            beforeSend: function () {
+            },
+            complete: function () {
+            },
+            error: function (jqXHR, textStatus, errorMsg) { // 出错时默认的处理函数
+                // jqXHR 是经过jQuery封装的XMLHttpRequest对象
+                // textStatus 可能为： null、"timeout"、"error"、"abort"或"parsererror"
+                // errorMsg 可能为： "Not Found"、"Internal Server Error"等
+
+                // 提示形如：发送AJAX请求到"/index.html"时出错[404]：Not Found
+                // alert( '发送AJAX请求到"' + this.url + '"时出错[' + jqXHR.status + ']：' + errorMsg );
+                if (jqXHR.status == "401") {
+                    alert('请登录')
+                    location.href = '{% url 'blog:login' %}'
+                }
+            }
+        });
+        function confirm_dialog(title, text, confirm_func) {
+            // confrim_dialog = $("#dialog").clone()
+            // confrim_dialog.attr("id", "confirm_dialog")
+            $("#confirm_dialog").remove()
+            var confirm_dialog = '<div class="am-modal am-modal-no-btn" tabindex="-1" id="confirm_dialog">\n' +
+                '        <div class="am-modal-dialog" style="margin-top:-150px;width:340px">\n' +
+                '            <div class="am-modal-hd">'+(title == "" ? '提示': title) +'\n' +
+                '                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>\n' +
+                '            </div>\n' +
+                '            <div class="am-modal-bd">\n' +
+                '                '+text+'\n' +
+                '            </div>\n' +
+                '            <div class="am-margin am-cf" style="margin-bottom:15px">\n' +
+                '                <input type="button" id="close_btn" value="关闭" class="am-btn am-btn-primary am-btn-sm am-fr">\n' +
+                '                <input type="button" id="confirm_btn" value="确定" class="am-btn am-btn-primary am-btn-sm am-fr" style="margin-right:15px">\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>'
+            $("body").append(confirm_dialog)
+            $('#confirm_dialog').modal();
+            $("#confirm_dialog").find("#confirm_btn").click(function(){
+                $("#confirm_dialog").modal('close')
+                confirm_func()
+            })
+            $("#confirm_dialog").find("#close, #close_btn").click(function(){
+                $("#confirm_dialog").modal('close')
+                // $("#confirm_dialog").remove()
+            })
+        }
     </script>
     {% block js %}{% endblock %}
 </head>
@@ -32,27 +103,27 @@
                 <li><a href="{% url 'blog:user_article_manage' %}">我的博文</a></li>
                 <li><a href="{% url 'blog:publish_article' %}">发布文章</a></li>
 
-                <li class="am-dropdown" data-am-dropdown>
-                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
-                        下拉 <span class="am-icon-caret-down"></span>
-                    </a>
-                    <ul class="am-dropdown-content">
-                        <li class="am-dropdown-header">标题</li>
-                        <li><a href="#">1. 去月球</a></li>
-                        <li class="am-active"><a href="#">2. 去火星</a></li>
-                        <li><a href="#">3. 还是回地球</a></li>
-                        <li class="am-disabled"><a href="#">4. 下地狱</a></li>
-                        <li class="am-divider"></li>
-                        <li><a href="#">5. 桥头一回首</a></li>
-                    </ul>
-                </li>
+{#                <li class="am-dropdown" data-am-dropdown>#}
+{#                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">#}
+{#                        下拉 <span class="am-icon-caret-down"></span>#}
+{#                    </a>#}
+{#                    <ul class="am-dropdown-content">#}
+{#                        <li class="am-dropdown-header">标题</li>#}
+{#                        <li><a href="#">1. 去月球</a></li>#}
+{#                        <li class="am-active"><a href="#">2. 去火星</a></li>#}
+{#                        <li><a href="#">3. 还是回地球</a></li>#}
+{#                        <li class="am-disabled"><a href="#">4. 下地狱</a></li>#}
+{#                        <li class="am-divider"></li>#}
+{#                        <li><a href="#">5. 桥头一回首</a></li>#}
+{#                    </ul>#}
+{#                </li>#}
             </ul>
 
-            <form class="am-topbar-form am-topbar-left am-form-inline" role="search">
-                <div class="am-form-group">
-                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索">
-                </div>
-            </form>
+{#            <form class="am-topbar-form am-topbar-left am-form-inline" role="search">#}
+{#                <div class="am-form-group">#}
+{#                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索">#}
+{#                </div>#}
+{#            </form>#}
 
 {#            <div class="am-topbar-right">#}
 {#                <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">#}
@@ -67,12 +138,13 @@
 
             <div class="am-topbar-right">
                 {% if request.session.user %}
-                    {{ request.session.user.name }}
+                    <img src="{% firstof request.session.user.profile_picture_image_url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl pp" alt="" onclick="javascript:location.href='{% url 'blog:user_information' %}';"/>
+                    <span class="name" onclick="javascript:location.href='{% url 'blog:user_information' %}';">{{ request.session.user.name }}</span>
                     <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:user_information' %}';">个人中心</button>
                     <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:logout' %}';">退出</button>
                 {% else %}
-                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm">登录</button>
-                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm">注册</button>
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:login' %}';">登录</button>
+                    <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="javascript:location.href='{% url 'blog:register' %}';">注册</button>
                 {% endif %}
             </div>
         </div>

@@ -2,15 +2,67 @@
 
 {% block extra_css %}
     <style>
-        .article-div{
+        .article-div {
             border-bottom: 1px solid #f2f2f2;
             padding: 10px 0;
         }
-        .article-info{
+
+        .article-info {
             font-size: 12px;
             padding-top: 5px;
         }
+
+        .am-pagination {
+            text-align: center;
+        }
+
+        .am-pagination > li > a, .am-pagination > li > span {
+            padding: .25em .5em;
+        }
+
+        .am-pagination > li > a {
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            margin-top: -4px;
+            padding: .25em 0.5em;
+        }
     </style>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function () {
+            $('.page-btn').click(function () {
+                page = parseInt($(this).text())
+                {#                location.href = '/blog/user_article_manage/'+(page)#}
+                location.href = '{% url 'blog:user_article_manage' %}' + '/' + page
+            })
+            $('#pre_btn').click(function () {
+                page = parseInt($('ul.am-pagination li.am-active a').text())
+                location.href = '{% url 'blog:user_article_manage' %}' + '/' + (page - 1)
+            })
+            $('#next_btn').click(function () {
+                page = parseInt($('ul.am-pagination li.am-active a').text())
+                location.href = '{% url 'blog:user_article_manage' %}' + '/' + (page + 1)
+            })
+            $('.delete-btn').click(function () {
+                id = $(this).attr('data')
+{#                title = $(this).parent().siblings('a').text()#}
+                title = $(this).closest('.article-div').find('a').text()
+                confirm_dialog('', '确定要删除《'+title+'》这篇文章吗?', function () {
+                    $.post('/blog/ajax_delete_article/'+ id, {}, function (result) {
+                        if(result == 'true'){
+                            location.reload()
+                        }else{
+                            alert('失败')
+                        }
+                    })
+                })
+            })
+        })
+    </script>
 {% endblock %}
 
 {% block user_content %}
@@ -18,9 +70,29 @@
         <div class="article-div">
             <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
             <div class="am-fr article-info">
-                {{ article.create_at | date:"DATETIME_FORMAT"}}
-{#                <a href="{% url 'blog:user_information' %}">{{ article.user.name }}</a>#}
+                {{ article.create_at | date:"DATETIME_FORMAT" }}
+                <button class="am-btn am-btn-xs am-radius am-btn-primary delete-btn" data="{{ article.id }}">
+                    <i class="am-icon-remove"></i>
+                    删除
+                </button>
             </div>
         </div>
     {% endfor %}
+    <div>
+        {% load extra_tags %}
+        {% get_display_page_range article_list.paginator.num_pages article_list.number as display_page_range %}
+        <ul class="am-pagination am-pagination-left">
+            <li class="{% if not article_list.has_previous %}am-disabled{% endif %}"><a id="pre_btn">&laquo;</a></li>
+            {% if display_page_range|first != 1 %}
+                <li><span>...</span></li>
+            {% endif %}
+            {% for p in display_page_range %}
+                <li class="{% if article_list.number == p %}am-active{% endif %}"><a class="page-btn">{{ p }}</a></li>
+            {% endfor %}
+            {% if display_page_range|last != article_list.paginator.num_pages %}
+                <li><span>...</span></li>
+            {% endif %}
+            <li class="{% if not article_list.has_next %}am-disabled{% endif %}"><a id="next_btn">&raquo;</a></li>
+        </ul>
+    </div>
 {% endblock %}

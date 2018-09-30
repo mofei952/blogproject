@@ -39,10 +39,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="am-padding">
+    <div class="">
         <div class="user-info-div am-cf">
             <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
-{#            <br>#}
             <div class="user-name-div am-fl">
                 <p>{{  user.name }}</p>
                 {% if request.session.user.id != user.id %}
@@ -58,7 +57,7 @@
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_information' %}">我的主页</a></li>
                 {% else %}
-                    <li><a href="{% url 'blog:user_information' user.id|default:'' %}">他的主页</a></li>
+{#                    <li><a href="{% url 'blog:user_information' user.id|default:'' %}">他的主页</a></li>#}
                 {% endif %}
                 {% if request.session.user.id == user.id %}
                     <li><a href="{% url 'blog:user_article_manage' %}">我的博文</a></li>

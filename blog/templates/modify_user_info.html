@@ -3,14 +3,29 @@
 
 {% block css %}
     <style>
-        .am-selected{
+        .am-selected {
             width: 100%;
         }
-        .am-selected-btn{
+
+        .am-selected-btn {
             border-color: #ccc;
         }
-        #replace_profile_picture_btn{
+
+        #replace_profile_picture_btn {
             margin: 20px;
+        }
+
+        .am-modal-dialog {
+            width: 310px;
+            height: 400px;
+        {#            max-width: 423px;#}
+        }
+
+        @media only screen and (min-width: 641px) {
+            .am-modal-dialog {
+                width: 420px;
+                height: 340px;
+            }
         }
     </style>
 {% endblock %}
@@ -27,7 +42,7 @@
             })
             $('#save_profile_picture_btn').click(function () {
                 pp_id = $('.pp-li.active').attr('data')
-                location.href = '/blog/modify_profile_picture/'+pp_id
+                location.href = '{% url 'blog:modify_profile_picture' %}' + '?id=' + pp_id
             })
         })
     </script>
@@ -36,26 +51,31 @@
 {% block content %}
     <div class="am-padding">
         <div class="user-info-div am-cf">
-            <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
-            <input type="button" id="replace_profile_picture_btn" value="修改头像" class="am-btn am-btn-primary am-btn-xs am-fl" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 420, height: 350}">
-        </div><br>
+            <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}"
+                 class="am-img-responsive am-fl" alt=""/>
+            <input type="button" id="replace_profile_picture_btn" value="修改头像"
+                   class="am-btn am-btn-primary am-btn-xs am-fl"
+                   data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0}">
+        </div>
+        <br>
         <form method="post" action="{% url 'blog:modify_user_info' %}">
             {% csrf_token %}
             <div class="am-input-group">
                 <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
-                <input type="text" class="am-form-field" placeholder="用户名" value="{{ user.name }}">
-            </div><br>
+                <input type="text" class="am-form-field" placeholder="用户名" value="{{ user.name }}" readonly>
+            </div>
+            <br>
             <div class="am-input-group">
                 <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
                 <input type="number" class="am-form-field" name="age" placeholder="年龄" value="{{ user.age }}">
-            </div><br>
+            </div>
+            <br>
             <div class="am-input-group">
                 <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
-    {#                <input type="text" class="am-form-field" name="confirm_password" placeholder="性别" value="{{ user.name }}">#}
                 <select data-am-selected name="sex">
                     <option value="M" {% if user.sex == 'M' %}selected{% endif %}>男</option>
                     <option value="F" {% if user.sex == 'F' %}selected{% endif %}>女</option>
-    {#                <option value="d" disabled>dis</option>#}
+                    {#                <option value="d" disabled>dis</option>#}
                 </select>
             </div>
             <div class="am-padding">
@@ -70,7 +90,7 @@
                 <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
             </div>
             <div class="am-modal-bd">
-                Modal 内容。本 Modal 无法通过遮罩层关闭。
+                {#                Modal 内容。本 Modal 无法通过遮罩层关闭。#}
             </div>
             <div class="am-margin" style="margin-top:-30px">
                 <input type="submit" id="save_profile_picture_btn" value="保存头像" class="am-btn am-btn-primary am-fr">

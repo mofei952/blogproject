@@ -2,18 +2,14 @@
 
 {% block css %}
     <style>
-        .article-div{
-            border-bottom: 1px solid #f2f2f2;
-            padding-bottom: 5px;
-        }
-        .article-info{
-            font-size: 12px;
-        }
-        .comment-count-span{
-            font-size: 12px;
-        }
         .am-pagination{
             text-align: center;
+        }
+        .am-pagination>li>a, .am-pagination>li>span{
+            padding: .25em .5em;
+        }
+        .am-pagination>li>a{
+            cursor: pointer;
         }
     </style>
 {% endblock %}
@@ -34,26 +30,7 @@
 {% endblock %}
 
 {% block content %}
-    {% for article in article_list %}
-        <div class="article-div am-padding">
-            <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
-            <div class="am-fr article-info">
-                {{ article.create_at | date:"DATETIME_FORMAT"}}
-                <a href="{% url 'blog:user_information' article.user.id %}">{{ article.user.name }}</a>
-            </div>
-            <div>
-                {{ article.content | safe | striptags | truncatechars:100 }}
-            </div>
-            <div class="am-cf">
-                <span class="am-fr comment-count-span">
-                    评论(<a href="{% url 'blog:article_detail' article.id %}">{{ article.comment_count }}</a>)
-                </span>
-                <span class="am-fr comment-count-span" style="margin-right:10px">
-                    阅读(<a href="{% url 'blog:article_detail' article.id %}">{{ article.articleread_set.count }}</a>)
-                </span>
-            </div>
-        </div>
-    {% endfor %}
+    {% include 'article_list.html' with article_list=article_list show_name=True %}
     <div >
         {% load extra_tags %}
         {% get_display_page_range article_list.paginator.num_pages article_list.number as display_page_range  %}
