@@ -12,17 +12,16 @@
             font-size: 1.4rem;
         }
         .pp{
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             line-height: 50px;
-            margin-top: 8px;
+            margin-top: 4px;
             cursor: pointer;
         }
         .name{
             line-height: 50px;
             margin: 0 8px;
-            /* padding-top: 2px; */
             float: left;
             height: 50px;
             cursor: pointer;
@@ -54,10 +53,39 @@
                 // alert( '发送AJAX请求到"' + this.url + '"时出错[' + jqXHR.status + ']：' + errorMsg );
                 if (jqXHR.status == "401") {
                     alert('请登录')
-                    location.href = "/blog/login"
+                    location.href = '{% url 'blog:login' %}'
                 }
             }
         });
+        function confirm_dialog(title, text, confirm_func) {
+            // confrim_dialog = $("#dialog").clone()
+            // confrim_dialog.attr("id", "confirm_dialog")
+            $("#confirm_dialog").remove()
+            var confirm_dialog = '<div class="am-modal am-modal-no-btn" tabindex="-1" id="confirm_dialog">\n' +
+                '        <div class="am-modal-dialog" style="margin-top:-150px;width:340px">\n' +
+                '            <div class="am-modal-hd">'+(title == "" ? '提示': title) +'\n' +
+                '                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>\n' +
+                '            </div>\n' +
+                '            <div class="am-modal-bd">\n' +
+                '                '+text+'\n' +
+                '            </div>\n' +
+                '            <div class="am-margin am-cf" style="margin-bottom:15px">\n' +
+                '                <input type="button" id="close_btn" value="关闭" class="am-btn am-btn-primary am-btn-sm am-fr">\n' +
+                '                <input type="button" id="confirm_btn" value="确定" class="am-btn am-btn-primary am-btn-sm am-fr" style="margin-right:15px">\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>'
+            $("body").append(confirm_dialog)
+            $('#confirm_dialog').modal();
+            $("#confirm_dialog").find("#confirm_btn").click(function(){
+                $("#confirm_dialog").modal('close')
+                confirm_func()
+            })
+            $("#confirm_dialog").find("#close, #close_btn").click(function(){
+                $("#confirm_dialog").modal('close')
+                // $("#confirm_dialog").remove()
+            })
+        }
     </script>
     {% block js %}{% endblock %}
 </head>

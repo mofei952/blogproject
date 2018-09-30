@@ -61,8 +61,8 @@ class Reply(TimeStampModel):
 
 
 class Follow(TimeStampModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follow_user')
-    follow_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followed_user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follow')
+    follow_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followed')
 
 
 class NoticeType(TimeStampModel):

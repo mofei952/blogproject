@@ -107,6 +107,7 @@ class PublishArticleView(View):
 
 class ArticleDetailView(View):
     """文章详情视图"""
+
     def get(self, request, id):
         """跳转到文章详情页面，跳转之前添加一条文章阅读记录(无论是否登录)"""
         user_id = request.session['user']['id'] if 'user' in request.session else ''
@@ -118,13 +119,18 @@ class ArticleDetailView(View):
 
 class UserInformationView(View):
     """用户信息视图"""
+
     def get(self, request, id):
         """跳转到用户信息页面，id为空默认查看自己的个人信息页面"""
         if not id:
             id = request.session['user']['id']
         user = User.objects.get(id=id)
-        article_list = Article.objects.filter(user_id=id).order_by('-create_at')
-        if 'user' in request.session and user.followed_user.filter(user_id=request.session['user']['id']):
+        article_list = Article.objects.filter(user_id=id) \
+            .annotate(read_count=Count('articleread')) \
+            .order_by('-create_at')
+        paginator = Paginator(article_list, 10)
+        article_list = paginator.get_page(1)
+        if 'user' in request.session and user.followed.filter(user_id=request.session['user']['id']):
             is_followed = True
         else:
             is_followed = False
@@ -133,47 +139,63 @@ class UserInformationView(View):
 
 
 class UserArticleManageView(View):
+    """用户文章管理视图"""
+
     @login_required
-    def get(self, request):
+    def get(self, request, page=1):
+        """用户文章页面显示用户的文章列表，默认显示第一页"""
         id = request.session['user']['id']
         user = User.objects.get(id=id)
         article_list = Article.objects.filter(user_id=id).order_by('-create_at')
+        paginator = Paginator(article_list, 10)
+        article_list = paginator.get_page(page)
         return render(request, 'user_article_manage.html', {'user': user,
                                                             'article_list': article_list})
 
 
 class UserNoticeView(View):
+    """用户通知视图"""
+
     def get(self, request):
+        """显示用户通知页面"""
         user = User.objects.get(id=request.session['user']['id'])
         notice_type_list = NoticeType.objects.all()
         return render(request, 'user_notice.html', {'user': user, 'notice_type_list': notice_type_list})
 
 
 class UserFollowView(View):
+    """我关注的 视图"""
+
     @login_required
     def get(self, request):
         id = request.session['user']['id']
         user = User.objects.get(id=id)
-        follow_users = User.objects.filter(followed_user__user_id=id)
+        follow_users = User.objects.filter(followed__user_id=id)
         return render(request, 'user_follow.html', {'user': user,
                                                     'follow_users': follow_users})
 
 
 class UserFollowedView(View):
+    """关注我的 视图"""
+
+    @login_required
     def get(self, request):
         id = request.session['user']['id']
         user = User.objects.get(id=id)
-        followed_users = User.objects.filter(follow_user__follow_user_id=id)
-        follow_users = User.objects.filter(followed_user__user_id=id).filter(
-            followed_user__follow_user__in=followed_users)
+        followed_users = User.objects.filter(follow__follow_user_id=id)
+        follow_users = User.objects.filter(followed__user_id=id).filter(
+            followed__follow_user__in=followed_users)
         return render(request, 'user_followed.html', {'user': user,
                                                       'followed_users': followed_users,
                                                       'follow_users': follow_users})
 
 
 class PublishCommentView(View):
+    """发布评论视图"""
+
     @login_required
     def post(self, request, article_id):
+        """发布评论表单提交处理，验证通过则添加评论记录，更新文章评论数，添加评论通知"""
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment_form.instance.article_id = article_id
@@ -202,11 +224,15 @@ class PublishCommentView(View):
 
 
 class ModifyUserInfoView(View):
+    """修改用户信息视图"""
+
     def get(self, request):
+        """跳转到修改用户信息界面"""
         user = User.objects.get(id=request.session['user']['id'])
         return render(request, 'modify_user_info.html', {'user': user})
 
     def post(self, request):
+        """修改用户信息表单提交处理，验证成功则修改用户信息"""
         user = User.objects.get(id=request.session['user']['id'])
         modify_user_info_form = ModifyUserInfoForm(request.POST, instance=user)
         if modify_user_info_form.is_valid():
@@ -215,19 +241,33 @@ class ModifyUserInfoView(View):
 
 
 class ProfilePictureListView(View):
+    """头像列表视图"""
+
     def get(self, request):
+        """查询所有系统头像，跳转到头像列表"""
         profile_picture_list = ProfilePicture.objects.filter(is_system=True)
         return render(request, 'profile_picture_list.html', {'profile_picture_list': profile_picture_list})
 
 
 class ModifyProfilePictureView(View):
-    def get(self, request, id):
-        User.objects.filter(id=request.session['user']['id']).update(profile_picture_id=id)
+    """修改头像视图"""
+
+    def get(self, request):
+        """修改头像后重定向到修改用户信息页面"""
+        id = request.GET.get('id')
+        user = User.objects.get(id=request.session['user']['id'])
+        user.profile_picture_id = id
+        user.save()
+        # 更新session，否则导致session中的头像url不同步
+        request.session['user'] = user.to_dict()
         return redirect(reverse('blog:modify_user_info'))
 
 
 class NoticeListView(View):
+    """通知列表视图"""
+
     def get(self, request, notice_type_id):
+        """返回渲染好的通知列表模板，嵌入用户通知页面"""
         notice_type = NoticeType.objects.get(id=notice_type_id)
         notice_list = Notice.objects.filter(type_id=notice_type_id)
         template = Template(notice_type.template)
@@ -238,15 +278,43 @@ class NoticeListView(View):
         return render(request, 'notice_list.html', {'NoticeType': NoticeType, 'notice_list': notice_list})
 
 
+def ajax_get_article_list(request, id):
+    """ajax请求获取某人的第page页文章列表"""
+    if not id:
+        id = request.session['user']['id']
+    page = int(request.GET.get('page'))
+    article_list = Article.objects.filter(user_id=id) \
+        .annotate(read_count=Count('articleread')) \
+        .order_by('-create_at')
+    paginator = Paginator(article_list, 10)
+    if page > paginator.num_pages:
+        return HttpResponse('')
+    else:
+        article_list = paginator.get_page(page)
+        return render(request, 'article_list.html', {'article_list': article_list})
+
+
+@csrf_exempt
+@login_required
+def ajax_delete_article(request, id):
+    """ajax请求删除文章"""
+    article = Article.objects.get(id=id)
+    if article.user_id != request.session['user']['id']:
+        return HttpResponse('false')
+    article.delete()
+    return HttpResponse('true')
+
+
 @login_required
 def ajax_follow(request, user_id):
+    """ajax请求关注某人"""
     Follow.objects.create(user_id=request.session['user']['id'], follow_user_id=user_id)
     return HttpResponse('true')
 
 
 @login_required
 def ajax_cancel_follow(request, user_id):
-    print('cancel', user_id)
+    """ajax请求对某人取消关注"""
     Follow.objects.filter(user_id=request.session['user']['id'], follow_user_id=user_id).delete()
     return HttpResponse('true')
 
@@ -254,6 +322,7 @@ def ajax_cancel_follow(request, user_id):
 @csrf_exempt
 @login_required
 def ajax_reply(request, comment_id):
+    """ajax请求回复评论"""
     reply_form = ReplyForm(request.POST)
     if reply_form.is_valid():
         reply_form.instance.comment_id = comment_id

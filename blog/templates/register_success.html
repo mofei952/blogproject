@@ -12,7 +12,7 @@
                 second--
                 $('#sp').text(second)
                 if(second == 0){
-                    location.href = '/blog/login'
+                    location.href = '{% url 'blog:login' %}'
                 }
             }, 1000)
         })

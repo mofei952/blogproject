@@ -42,7 +42,6 @@
     <div class="">
         <div class="user-info-div am-cf">
             <img src="{% firstof user.profile_picture.image.url '/static/image/default_profile_picture.jpg' %}" class="am-img-responsive am-fl" alt=""/>
-{#            <br>#}
             <div class="user-name-div am-fl">
                 <p>{{  user.name }}</p>
                 {% if request.session.user.id != user.id %}

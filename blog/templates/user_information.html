@@ -2,28 +2,57 @@
 
 {% block extra_css %}
     <style>
-        .article-div{
-            padding: 10px 0;
-            border-bottom: 1px solid #f2f2f2;
-        }
-        .article-info{
-            font-size: 12px;
-            padding-top: 3px;
+        .load-div {
+            font-size: 20px;
+            text-align: center;
+            visibility: hidden;
         }
     </style>
 {% endblock %}
 
+{% block extra_js %}
+    <script>
+        $(function () {
+            var is_running = false
+            var page = 1
+
+            function showMore() {
+                if (is_running) {
+                    return
+                }
+                is_running = true
+                page++
+                $.get('{% url 'blog:ajax_get_article_list' user.id %}', {page: page}, function (data) {
+                    console.log(data)
+                    if (!data) {
+                        $('.load-div').text('没有更多了')
+                        $('.load-div').css('visibility', 'visible')
+                        return
+                    }
+                    $('.load-div').before(data)
+                    is_running = false
+                })
+            }
+
+            $(window).scrollTop(0)
+            $(window).scroll(function (event) {
+                window_height = $(window).height()
+                body_height = $('body').height()
+                scroll_top = $(window).scrollTop()
+                if (scroll_top >= body_height - window_height - 1) {
+                    showMore()
+                }
+            })
+
+
+        })
+    </script>
+{% endblock %}
+
 {% block user_content %}
-    {% for article in article_list %}
-        <div class="article-div">
-            <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
-            <div class="am-fr article-info">
-                {{ article.create_at | date:"DATETIME_FORMAT"}}
-{#                <a href="{% url 'blog:user_information' %}">{{ article.user.name }}</a>#}
-            </div>
-            <div>
-                {{ article.content | safe | striptags | cut:' ' | truncatechars:100 }}
-            </div>
-        </div>
-    {% endfor %}
+    {% include 'article_list.html' with article_list=article_list show_name=False %}
+    <div class="load-div">
+        <span>加载中</span>
+        <img style="width:20px;height:20px;margin-top:-2px;" src="/static/image/loading.gif"/>
+    </div>
 {% endblock %}
