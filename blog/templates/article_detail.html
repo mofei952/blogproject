@@ -15,6 +15,19 @@
             font-size: 12px;
             padding-top: 5px;
         }
+        .article-content .image-style-side{
+            float: right;
+            clear: both;
+            margin-left: 21px;
+        }
+        .article-content .image{
+            text-align: center;
+            margin: 8.4px 0;
+        }
+        .article-content .image img{
+            margin: 0 auto;
+            display: block;
+        }
         .comment-list-div{
             border-bottom: 1px solid #c5c5c5;
         }
@@ -138,7 +151,7 @@
                     <a href="{% url 'blog:user_information' article.user.id %}">{{ article.user.name }}</a>
                 </div>
             </div>
-            <div>
+            <div class="article-content">
                 {{ article.content | safe }}
             </div>
         </div>
