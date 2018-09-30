@@ -266,10 +266,11 @@ class ModifyProfilePictureView(View):
 class NoticeListView(View):
     """通知列表视图"""
 
+    @login_required
     def get(self, request, notice_type_id):
         """返回渲染好的通知列表模板，嵌入用户通知页面"""
         notice_type = NoticeType.objects.get(id=notice_type_id)
-        notice_list = Notice.objects.filter(type_id=notice_type_id)
+        notice_list = Notice.objects.filter(type_id=notice_type_id, receiver_id=request.session['user']['id'])
         template = Template(notice_type.template)
         for notice in notice_list:
             notice.context = json.loads(notice.context)

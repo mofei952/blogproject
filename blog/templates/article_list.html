@@ -3,6 +3,12 @@
         border-bottom: 1px solid #f2f2f2;
         padding-bottom: 1rem;
         padding-top: 1.6rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .article-div:hover {
+        /* box-shadow: 0 0 25px #ccc; */
+        background: #f2f2f2;
     }
     .article-div:first-child{
         padding-top: 0.4rem;
@@ -21,7 +27,7 @@
             {% endif %}
         </div>
         <div>
-            {{ article.content | safe | striptags | cut:' ' | truncatechars:100 }}
+            {{ article.content | safe | striptags | truncatechars:100 }}
         </div>
         <div class="am-cf">
             <span class="am-fr small-font">

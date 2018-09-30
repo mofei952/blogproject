@@ -3,18 +3,19 @@
 
 {% block css %}
     <style>
-        .title-div{
+        .title-div {
             margin: 1.6rem 0;
         }
-        #editor{
-            min-height: 500px;
+
+        #editor {
+            min-height: 340px;
         }
-        .ck-editor{
-{#            width: 1000px !important;#}
-{#            margin: 0 auto !important;#}
-            margin: 1.6rem 0 !important;
+
+        .ck-editor {
+        {#            width: 1000px !important;#}{#            margin: 0 auto !important;#} margin: 1.6rem 0 !important;
         }
-        .ck-editor__editable {
+
+        .ck-content {
             min-height: 300px;
         }
     </style>
@@ -25,13 +26,66 @@
     <script>
         $(function () {
             ClassicEditor
-                .create( document.querySelector( '#editor' ))
+                .create(document.querySelector('#editor'),{
+                    language: 'zh-cn',
+{#                    image: {#}
+{#                        toolbar: [ 'imageTextAlternative' ],#}
+{#                        styles: [ 'full', 'side' ]#}
+{#                    },#}
+                    ckfinder: {
+                        uploadUrl: '/upload'
+                    }
+                })
                 .then(function (editor) {
                     window.editor = editor;
+{#                    editor.isReadOnly = true#}
                     editor.setData($('input[name=content]').val());
+{#                    editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {#}
+{#                        return new UploadAdapter(loader);#}
+{#                    }#}
                 })
-
+                .catch(error => {
+                    console.error(error);
+                });
         })
+
+        class UploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+
+            upload() {
+                return new Promise(function (resolve, reject) {
+                    console.log(this.loader)
+                    console.log(this.loader.file)
+                    const data = new FormData();
+                    data.append('file', this.loader.file);
+                    data.append('allowSize', 10);//允许图片上传的大小/兆
+                    $.ajax({
+                        url: 'upload',
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            if (data) {
+                                resolve({
+                                    default: data
+                                })
+                            } else {
+                                reject('失败')
+                            }
+
+                        }
+                    })
+                })
+            }
+
+            abort() {
+            }
+        }
+
         function before_submit() {
             $('input[name=content]').val(window.editor.getData())
             return true
@@ -41,7 +95,7 @@
 
 
 {% block content %}
-    <form method="post" action="{% url 'blog:publish_article' %}"  onsubmit="return before_submit()">
+    <form method="post" action="{% url 'blog:publish_article' %}" onsubmit="return before_submit()">
         {% csrf_token %}
         <div class="am-input-group title-div">
             <span class="am-input-group-label">标题</span>
